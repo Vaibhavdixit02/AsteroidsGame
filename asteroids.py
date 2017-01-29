@@ -231,7 +231,7 @@ score = 0
 scorelist = [0]
 angle = 0
 asteroids = pygame.sprite.Group()
-
+pygame.mixer.music.load('music.mp3')
 missiles = pygame.sprite.Group()
 m = Projectile(screen,100,700)
 missiles.add(m)
@@ -283,7 +283,7 @@ while True:
         screen.blit(label5,(150,65))
         screen.blit(label8,(430,65))
         pygame.draw.rect(screen, (100, 10, 0), (375, 250, 200, 75))
-
+        pygame.mixer.music.play(-1)
         screen.blit(label,(420,265))
         screen.blit(choice,(250,340))
         screen.blit(label2,(260,165))
