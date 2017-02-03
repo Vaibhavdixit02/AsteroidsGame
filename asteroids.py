@@ -1,3 +1,4 @@
+#including the pictures used.
 bif = "bg.jpg"
 mif = "bg - Copy.jpg"
 nif = "bg - Copy - Copy.jpg"
@@ -17,8 +18,12 @@ d = "missile.jpg"
 f = "asteroids1.jpg"
 g = "asteroids2.jpg"
 
+#importing the required libraries and modules
+
 import pygame, sys, random, time
 from pygame.locals import *
+
+#initialising everything 
 
 pygame.init()
 screen = pygame.display.set_mode((1000,600),0,32)
@@ -43,30 +48,26 @@ ship11 = pygame.image.load(s).convert_alpha()
 missile1 = pygame.image.load(d).convert_alpha()
 asteroid1 = pygame.image.load(f).convert_alpha()
 asteroid2 = pygame.image.load(g).convert_alpha()
+
+#creating classes to handle different objects
 class buttonsmall():
-
-
     def __init__(self,x,y,screen,mouse):
-
-
         self.create(screen,x,y)
         self.isclicked(x,y,mouse)
     def create(self,screen,x,y):
         pygame.draw.rect(screen,(100,100,0),(x,y,20,20))
-
-
     def isclicked(self,x,y,mouse):
+        #adding usability to buttons on screen
         if event.type == MOUSEBUTTONDOWN:
             if x < mouse[0] < x+20 and y < mouse[1] <y+20 :
                 pygame.draw.lines(screen,(100,50,0),1,((x,y),(x+20,y),(x+20,y+20),(x,y+20)),5)
                 selected.pop()
                 selected.append((x,y))
-
+                #using the co-ordinates of the click, selecting ship to be used for buttons of first row
                 if selected[0][1]== 345:
                     if selected[0][0] == 250:
                         ships.pop()
                         ships.append(1)
-
                     elif selected[0][0] ==330:
                         ships.pop()
                         ships.append(2)
@@ -82,6 +83,7 @@ class buttonsmall():
                     elif selected[0][0] ==620:
                         ships.pop()
                         ships.append(6)
+                #using the co-ordinates of the click, selecting ship to be used for buttons of second row
                 elif selected[0][1] ==450:
                     if selected[0][0] ==250:
                         ships.pop()
@@ -98,20 +100,17 @@ class buttonsmall():
                     elif selected[0][0] ==620:
                         ships.pop()
                         ships.append(11)
-
-
-
-
-
+#changing color of button on motion of mouse over it
         if event.type == MOUSEMOTION:
             if x < mouse[0] < x + 20 and y < mouse[1] < y + 20:
                 pygame.draw.rect(screen, (100, 50, 0), (x, y, 20, 20))
-
         else:
             return False
 shipx = 10
 shipy = 300
+#spaceship class
 class spaceship(pygame.sprite.Sprite):
+    # 't' is the index of the ship selected that needs to be drawn on screen for game to begin
     def __init__(self,screen1,speed,t):
         super(spaceship, self).__init__()
         self.create(screen1,t,shipx,shipy)
@@ -149,8 +148,10 @@ class spaceship(pygame.sprite.Sprite):
         elif t == 11:
             self.image = ship11
             self.rect = self.image.get_rect()
-    def create(self,screen1,t,shipx,shipy):
 
+#the draw method to get the ship on screen
+
+    def create(self,screen1,t,shipx,shipy):
         if t == 1:
             screen1.blit(ship1,(shipx,shipy))
         elif t==2:
@@ -176,16 +177,8 @@ class spaceship(pygame.sprite.Sprite):
 
 
 colour = (100,0,0)
-class missile(pygame.sprite.Sprite):
-    def __init__(self,u,v,screen2):
-        super(missile, self).__init__()
-        self.create(screen2,u,v)
-        self.move(screen2,u,v)
-    def create(self,screen2,x, y):
-        screen2.blit(missile1, (x,y))
-    def move(self,screen2,x, y):
-        x = x + 10
-        self.create(screen2,x,y)
+
+#using Projectile class to create missiles and adding fuctionality to them
 
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, surface, u, v):
@@ -196,10 +189,11 @@ class Projectile(pygame.sprite.Sprite):
         self.renderer = surface
         self.speed = 10
         self.rect = self.image.get_rect()
-
     def move(self, time):
         self.x += time*self.speed
         self.renderer.blit(missile1, (self.x, self.y))
+
+#Asteroid class to create asteroids and put them on screen 
 
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self,screen3):
@@ -209,8 +203,7 @@ class Asteroid(pygame.sprite.Sprite):
         self.y = random.randint(0,600)
         self.renderer = screen3
         self.rect = self.image.get_rect()
-
-
+#Setting random speeds of the asteroids
     def draw(self):
         self.renderer.blit(asteroid1, (self.x, self.y))
         self.x += random.randint(0,5)
@@ -218,20 +211,13 @@ class Asteroid(pygame.sprite.Sprite):
         self.x = self.x % 1000
         self.y = self.y % 600
 
+# initialising group of sprites and variables
 
-
-
-
-
-
-
-
+pygame.mixer.music.load('music.mp3')
 level = 3
 score = 0
 scorelist = [0]
-angle = 0
 asteroids = pygame.sprite.Group()
-pygame.mixer.music.load('music.mp3')
 missiles = pygame.sprite.Group()
 m = Projectile(screen,100,700)
 missiles.add(m)
@@ -240,12 +226,14 @@ o =1
 color1 = (30,70,100)
 listp = []
 missileLaunched = False
+#Main loop begins
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
 
             pygame.quit()
             sys.exit()
+#background on screen
     for i in range(0,1000,300):
         for j in range(0,600,300):
             screen.blit(background1, (i, j))
@@ -255,6 +243,8 @@ while True:
     for i in range(200,1000,300):
         for j in range(200,600,300):
             screen.blit(background3, (i, j))
+
+#Text and the options of ships and the buttons on screen
 
     default_font = pygame.font.get_default_font()
     font_renderer = pygame.font.Font(default_font,50)
@@ -270,12 +260,15 @@ while True:
     label8 = font_renderer.render(str(max(scorelist)), 1, (120, 20, 30))
     mouse = pygame.mouse.get_pos()
 
+#For starting the game and closing the menu
+
     if event.type == MOUSEBUTTONDOWN and 375 < mouse[0] <575 and 250< mouse[1] <325:
         o = 0
 
-
+#The menu, options of ships displayed
     if o == 1:
         score = 0
+        level = 3
         shipx = random.randint(0,1000)
         shipy = random.randint(0,600)
         screen.blit(label6,(150,20))
@@ -295,19 +288,22 @@ while True:
             bt = buttonsmall(i,450,screen,mouse)
         bt = buttonsmall(530, 450, screen, mouse)
         bt = buttonsmall(620, 450, screen, mouse)
+        #checking the button selected and drawing a different color box around it
         for i in selected:
             pygame.draw.lines(screen, (100, 50, 0), 1, ((selected[0][0], selected[0][1]), (selected[0][0] + 20, selected[0][1]), (selected[0][0] + 20, selected[0][1] + 20), (selected[0][0], selected[0][1] + 20)), 5)
 
+#game window
+
     elif o == 0:
         pygame.init()
+        #ship created
         ship = spaceship(screen,10,ships[0])
         clock = pygame.time.Clock()
         asteroid13 = Asteroid(screen)
-
+        #drawing asteroids
         if asteroids.__len__() < level and asteroids.__len__() > 0:
             for asts in asteroids:
                 if abs(asts.x - asteroid13.x ) > 74 and abs(asts.y - asteroid13.y ) > 59:
-
                     asteroids.add(asteroid13)
         elif asteroids.__len__() == 0:
             asteroids.add(asteroid13)
@@ -315,19 +311,12 @@ while True:
         screen.blit(label4,(90,10))
         for ast in asteroids:
             ast.draw()
+        #getting time since the start of game
         times = pygame.time.get_ticks()
         if times % 5000 == 0:
-            level += 1
-            print times
-
-
-
-
-
-
-
-
-
+            level += 1 #increasing level every 5000 milliseconds
+            print (times)
+    #checking for button presses and executing the required commands
     keys = pygame.key.get_pressed()
     if event.type == KEYDOWN:
         if event.key == K_SPACE and not missileLaunched and o == 0:
@@ -337,17 +326,12 @@ while True:
     elif event.type == KEYUP:
         if event.key == K_SPACE and missileLaunched:
             missileLaunched = False
-
-
-
-
+#missile launch
     for misses in missiles:
         misses.move(2)
         if misses.x > 1000:
             missiles.remove(misses)
-
-
-
+#movement of ship
     angle = 0
     if keys[K_UP]:
         shipy -= 5
@@ -365,9 +349,7 @@ while True:
     if keys[K_LEFT]:
         shipx -= 5
         shipx = shipx % 1000
-
-
-
+#gradual deccelaration of ship and not jerk stop
     if event.type == pygame.KEYUP:
         decc = 0.05
         if event.key == K_RIGHT:
@@ -386,7 +368,7 @@ while True:
             while decc > 0:
                 shipx == decc
                 decc = decc - 0.01
-
+#checking collision of missile and asteroid
     for asts in asteroids:
         for mis in missiles:
             if abs(asts.x - mis.x + 16) < 58 and abs(asts.y - mis.y +12) < 48:
@@ -394,17 +376,10 @@ while True:
                 missiles.remove(mis)
                 score += 1
                 scorelist.append(score)
-
-
+#checking collision of ship and asteroid
     for asts in asteroids:
         if abs(shipx-asts.x) < ship.rect.width/2 + 37 and abs(shipy-asts.y) < ship.rect.height/2 + 30:
             o = 1
-
-
-
-
-
-
 
 
     pygame.display.update()
